@@ -1,0 +1,9 @@
+{
+  "name": "adapter-minimal-server",
+  "version": "0.1.0",
+  "description": "最小の DAP アダプタの実装。",
+  "private": true,
+  "author": "vain0x <vainzerox@gmail.com>",
+  "main": "target/index.js",
+  "license": "CC0-1.0"
+}
