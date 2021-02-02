@@ -45,7 +45,7 @@ class MyDebugConfigurationProvider implements vscode.DebugConfigurationProvider 
 }
 
 /**
- * デバッグアダプターに関する設定を提供するもの。
+ * デバッグアダプタに関する設定を提供するもの。
  */
 class MyDebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
   createDebugAdapterDescriptor(_session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
