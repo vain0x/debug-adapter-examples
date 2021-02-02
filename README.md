@@ -1,8 +1,14 @@
 # Debug Adapter Examples
 
-Debug Adapter Protocol (DAP) の実装例 (予定)
+Debug Adapter Protocol (DAP) の実装例
 
-## Links
+## 一覧
+
+- [adapter-minimal](./adapter-minimal)
+    - 起動と終了だけできる DAP アダプタ
+    - 通信まわりや拡張機能の設定の参考になるはず
+
+## リンク
 
 DAP:
 
