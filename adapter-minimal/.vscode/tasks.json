@@ -1,0 +1,50 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-adapter",
+            "command": "npm",
+            "type": "shell",
+            "args": [
+                "run",
+                "tsc-build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/adapter"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "build-vscode-ext",
+            "command": "npm",
+            "type": "shell",
+            "args": [
+                "run",
+                "tsc-build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/vscode_ext"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "build-all",
+            "command": "echo",
+            "type": "shell",
+            "dependsOn": [
+                "build-adapter",
+                "build-vscode-ext"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
