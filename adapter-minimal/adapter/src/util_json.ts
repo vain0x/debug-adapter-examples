@@ -9,6 +9,6 @@ export type JsonValue =
   | JsonValue[]
   | JsonObject
 
-type JsonObject = {
+export type JsonObject = {
   [key: string]: JsonValue
 }

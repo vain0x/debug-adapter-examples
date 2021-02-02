@@ -1,18 +1,13 @@
 // DAP メッセージを標準出力に書く。
 
+import { JsonObject } from "./util_json"
 import { encodeUtf8 } from "./util_utf8"
 
-/**
- * DAP のレスポンスメッセージを標準出力に書く。
- */
-export const writeDapResponse = (seq: number, requestSeq: number, requestCommand: string, body?: unknown): void => {
+export const writeDapMessage = (message: JsonObject): void => {
   const json = JSON.stringify({
+    ...message,
     jsonrpc: "2.0",
-    seq,
-    "request_seq": requestSeq,
-    command: requestCommand,
-    body,
-  }) + "\r\n" // ログを読みやすくするため、末尾に改行をつけておく。
+  }) + "\r\n" // 出力を見やすくするため、末尾に改行をつけておく。
 
   const encodedJson = encodeUtf8(json)
   const contentLength = encodedJson.length
