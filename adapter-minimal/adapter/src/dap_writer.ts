@@ -1,6 +1,7 @@
 // DAP メッセージを標準出力に書く。
 
 import { JsonObject } from "./util_json"
+import { debug } from "./util_logging"
 import { encodeUtf8 } from "./util_utf8"
 
 export const writeDapMessage = (message: JsonObject): void => {
@@ -14,4 +15,6 @@ export const writeDapMessage = (message: JsonObject): void => {
 
   process.stdout.write(`Content-Length: ${contentLength}\r\n\r\n`)
   process.stdout.write(encodedJson)
+
+  debug("write", message)
 }

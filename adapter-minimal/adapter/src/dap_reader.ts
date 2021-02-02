@@ -5,6 +5,7 @@
 
 import { processIncomingMessage } from "./dap_processor"
 import { JsonValue } from "./util_json"
+import { debug, error } from "./util_logging"
 import { decodeUtf8, encodeUtf8 } from "./util_utf8"
 
 // 標準入力から読んだデータのうち、まだメッセージとしてパースしていないもの。
@@ -68,7 +69,7 @@ const extractSingleMessageFromBuffer = (): { message: JsonValue } | null => {
     }
 
     if (key !== "") {
-      console.error("WARN: Unknown header.", key)
+      error("Unknown header.", key)
     }
   }
   if (contentLength == null) {
@@ -83,6 +84,7 @@ const extractSingleMessageFromBuffer = (): { message: JsonValue } | null => {
   // バッファからメッセージを取り除く。
   buffer = buffer.slice(bodyIndex + contentLength)
 
+  debug("read", body)
   return { message: body }
 }
 
@@ -106,6 +108,6 @@ const findIndex = (buffer: Buffer, patternString: string): number | null => {
 }
 
 const fail = (message: string): never => {
-  console.error("ERROR:", message)
+  error(message)
   process.exit(1)
 }

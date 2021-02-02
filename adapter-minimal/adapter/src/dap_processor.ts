@@ -1,6 +1,7 @@
 import { writeDapMessage } from "./dap_writer"
 import { JsonRpcError } from "./json_rpc_error"
 import { JsonObject, JsonValue } from "./util_json"
+import { error } from "./util_logging"
 
 // メッセージにつける連番の最後の値 (`++lastSeq` で値を増やしつつ次の値を取得できる。)
 let lastSeq = 0
@@ -55,7 +56,8 @@ export const processIncomingMessage = (message: JsonValue): void => {
   } catch (err) {
     // 処理中にエラーが起こったときは JSON-RPC の仕様にのっとってエラーを送信する。
     if (!(err instanceof JsonRpcError)) {
-      console.error("ERROR:", err)
+      error(String(err))
+
       err = JsonRpcError.INTERNAL
     }
 

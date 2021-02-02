@@ -1,8 +1,9 @@
 import { startReader } from "./dap_reader"
+import { error, fail } from "./util_logging"
 
 startReader()
 
 process.stdin.on("error", err => {
-  console.error("ERROR:", err)
-  process.exit(1)
+  error(err.message, err.name, err.stack)
+  fail("stdin")
 })
