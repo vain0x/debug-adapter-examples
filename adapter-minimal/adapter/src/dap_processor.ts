@@ -1,7 +1,6 @@
 import { writeDapMessage } from "./dap_writer"
-import { JsonRpcError } from "./json_rpc_error"
 import { JsonObject, JsonValue } from "./util_json"
-import { error } from "./util_logging"
+import { error, fail } from "./util_logging"
 
 // メッセージにつける連番の最後の値 (`++lastSeq` で値を増やしつつ次の値を取得できる。)
 let lastSeq = 0
@@ -10,12 +9,13 @@ let lastSeq = 0
  * 入力されたメッセージを処理する。
  */
 export const processIncomingMessage = (message: JsonValue): void => {
-  try {
-    const req = validateAsDapRequest(message)
-    if (req == null) {
-      throw JsonRpcError.INVALID_REQUEST
-    }
+  const req = validateAsDapRequest(message)
+  if (req == null) {
+    // (リクエストが形式的に無効なとき。エラー処理の方法は仕様に書いてなさそうなので、クラッシュさせる。)
+    throw fail("Request parse error.")
+  }
 
+  try {
     switch (req.command) {
       case "initialize":
         writeAck(req)
@@ -51,19 +51,18 @@ export const processIncomingMessage = (message: JsonValue): void => {
         process.exit(0)
 
       default:
-        throw JsonRpcError.METHOD_NOT_FOUND
+        throw new Error("Method not found.")
     }
   } catch (err) {
-    // 処理中にエラーが起こったときは JSON-RPC の仕様にのっとってエラーを送信する。
-    if (!(err instanceof JsonRpcError)) {
-      error(String(err))
-
-      err = JsonRpcError.INTERNAL
-    }
+    // 処理中にエラーが起こったときはエラーレスポンスを返す。
+    error(String(err))
 
     writeDapMessage({
-      code: err.code,
-      message: err.message,
+      seq: ++lastSeq,
+      type: "response",
+      request_seq: req.seq,
+      command: req.command,
+      success: false,
     })
   }
 }

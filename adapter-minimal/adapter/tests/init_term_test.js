@@ -52,7 +52,6 @@ const main = () => {
   let lastSeq = 0
 
   sendMessage({
-    jsonrpc: "2.0",
     seq: ++lastSeq,
     type: "request",
     command: "initialize",
@@ -62,14 +61,12 @@ const main = () => {
   })
 
   sendMessage({
-    jsonrpc: "2.0",
     seq: ++lastSeq,
     type: "request",
     command: "launch"
   })
 
   sendMessage({
-    jsonrpc: "2.0",
     seq: ++lastSeq,
     type: "request",
     command: "disconnect",

@@ -13,7 +13,6 @@ Debug Adapter Protocol (DAP) の実装例
 DAP:
 
 - DAP の仕様: [Official page for Debug Adapter Protocol](https://microsoft.github.io/debug-adapter-protocol/)
-- JSON-RPC の仕様: [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 
 VSCode:
 

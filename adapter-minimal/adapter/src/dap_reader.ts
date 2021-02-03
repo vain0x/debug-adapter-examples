@@ -5,7 +5,7 @@
 
 import { processIncomingMessage } from "./dap_processor"
 import { JsonValue } from "./util_json"
-import { debug, error } from "./util_logging"
+import { debug, error, fail } from "./util_logging"
 import { decodeUtf8, encodeUtf8 } from "./util_utf8"
 
 // 標準入力から読んだデータのうち、まだメッセージとしてパースしていないもの。
@@ -105,9 +105,4 @@ const findIndex = (buffer: Buffer, patternString: string): number | null => {
     }
   }
   return null
-}
-
-const fail = (message: string): never => {
-  error(message)
-  process.exit(1)
 }
