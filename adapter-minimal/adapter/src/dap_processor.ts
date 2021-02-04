@@ -88,14 +88,11 @@ const validateAsDapRequest = (message: JsonValue): DapRequest | null => {
     return null
   }
 
-  // HACK: m["type"] === request という検査から m <: { type: "request" } という型付けを帰結するには、
-  //       前もって m に「省略可能プロパティ type を含む型」({ type?: unknown } など) をつけておく必要がある。
-  //       DapRequest のそれぞれのプロパティを (省略可能な状態で) 持つ型は Partial<DapRequest> と書ける。
-  const m: Partial<DapRequest> = obj
+  const m: Record<string, unknown> = obj
   return m["type"] === "request"
     && typeof m["seq"] === "number"
     && typeof m["command"] === "string"
-    ? m as DapRequest
+    ? m as unknown as DapRequest
     : null
 }
 
