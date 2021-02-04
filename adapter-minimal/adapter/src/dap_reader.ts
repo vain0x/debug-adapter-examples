@@ -31,6 +31,7 @@ export const startReader = () => {
       if (result == null) {
         break
       }
+
       processIncomingMessage(result.message) // dap_processor.ts を参照。
     }
   })
@@ -60,10 +61,10 @@ const extractSingleMessageFromBuffer = (): { message: unknown } | null => {
 
   let contentLength: number | null = null
   for (const line of headerPart.split("\r\n")) {
-    let [key, value] = line.split(":").map(part => part.trim())
+    const [key, value] = split(line, ":")
 
     if (key === "Content-Length") {
-      contentLength = Number.parseInt(value)
+      contentLength = Number.parseInt(value, 10)
       continue
     }
 
@@ -78,7 +79,7 @@ const extractSingleMessageFromBuffer = (): { message: unknown } | null => {
 
   // ボディを JSON としてパースする。(失敗時は例外を伝播する。)
   const bodyPart = buffer.slice(bodyIndex, bodyIndex + contentLength)
-  const body: unknown = JSON.parse(decodeUtf8(bodyPart))
+  const body = parseJson(decodeUtf8(bodyPart))
 
   // バッファからメッセージを取り除く。
   buffer = buffer.slice(bodyIndex + contentLength)
@@ -105,3 +106,9 @@ const findIndex = (buffer: Buffer, patternString: string): number | null => {
   }
   return null
 }
+
+const split = (s: string, sep: string): string[] =>
+  s.split(sep).map(part => part.trim())
+
+const parseJson = (s: string) =>
+  JSON.parse(s) as unknown
