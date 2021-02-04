@@ -4,7 +4,6 @@
 // の Base Protocol のあたりを参照。
 
 import { processIncomingMessage } from "./dap_processor"
-import { JsonValue } from "./util_json"
 import { debug, error, fail } from "./util_logging"
 import { decodeUtf8, encodeUtf8 } from "./util_utf8"
 
@@ -37,7 +36,7 @@ export const startReader = () => {
   })
 }
 
-const extractSingleMessageFromBuffer = (): { message: JsonValue } | null => {
+const extractSingleMessageFromBuffer = (): { message: unknown } | null => {
   // バッファに溜まったデータは、まだメッセージの一部だけかもしれないので、パースが成功するとは限らない。
   // (パースできなかったら何もせず、次にデータが届くのを待つ。)
   // 逆に、バッファにはすでに複数のメッセージが溜まっていることもある。
@@ -79,7 +78,7 @@ const extractSingleMessageFromBuffer = (): { message: JsonValue } | null => {
 
   // ボディを JSON としてパースする。(失敗時は例外を伝播する。)
   const bodyPart = buffer.slice(bodyIndex, bodyIndex + contentLength)
-  const body = JSON.parse(decodeUtf8(bodyPart)) as JsonValue
+  const body: unknown = JSON.parse(decodeUtf8(bodyPart))
 
   // バッファからメッセージを取り除く。
   buffer = buffer.slice(bodyIndex + contentLength)

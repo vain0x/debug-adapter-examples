@@ -1,5 +1,4 @@
 import { writeDapMessage } from "./dap_writer"
-import { JsonObject, JsonValue } from "./util_json"
 import { error, fail } from "./util_logging"
 
 // メッセージにつける連番の最後の値 (`++lastSeq` で値を増やしつつ次の値を取得できる。)
@@ -8,7 +7,7 @@ let lastSeq = 0
 /**
  * 入力されたメッセージを処理する。
  */
-export const processIncomingMessage = (message: JsonValue): void => {
+export const processIncomingMessage = (message: unknown): void => {
   const req = validateAsDapRequest(message)
   if (req == null) {
     // (リクエストが形式的に無効なとき。エラー処理の方法は仕様に書いてなさそうなので、クラッシュさせる。)
@@ -66,6 +65,7 @@ export const processIncomingMessage = (message: JsonValue): void => {
     })
   }
 }
+
 // -----------------------------------------------
 // 補助
 // -----------------------------------------------
@@ -74,25 +74,29 @@ interface DapRequest {
   seq: number
   type: "request"
   command: string
-  args?: JsonValue
+  args?: unknown
 }
 
-const validateAsJsonObject = (value: JsonValue): JsonObject | null =>
-  typeof value === "object" && !(value instanceof Array)
-    ? value
-    : null
+// TypeScript ヒント: これは単に Partial<DapRequest> と書ける。
+interface PartialDapRequest {
+  seq?: number
+  type?: "request"
+  command?: string
+  args?: unknown
+}
 
-const validateAsDapRequest = (message: JsonValue): DapRequest | null => {
-  const obj = validateAsJsonObject(message)
-  if (obj == null) {
+const validateAsDapRequest = (message: unknown): DapRequest | null => {
+  // message がオブジェクトであることを検査する。
+  if (!(typeof message === "object" && !(message instanceof Array) && message != null)) {
     return null
   }
 
-  const m: Record<string, unknown> = obj
-  return m["type"] === "request"
-    && typeof m["seq"] === "number"
-    && typeof m["command"] === "string"
-    ? m as unknown as DapRequest
+  // 所定のプロパティを持つことを検査する。
+  const { type, seq, command }: PartialDapRequest = message
+  return type === "request"
+    && typeof seq === "number"
+    && typeof command === "string"
+    ? { ...message, type, seq, command }
     : null
 }
 
