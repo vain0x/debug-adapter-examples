@@ -31,7 +31,7 @@ export const startReader = () => {
       if (result == null) {
         break
       }
-      processIncomingMessage(result.message) // dap_process.ts を参照。
+      processIncomingMessage(result.message) // dap_processor.ts を参照。
     }
   })
 }
