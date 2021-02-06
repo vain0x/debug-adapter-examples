@@ -19,3 +19,10 @@ JSON (.json) ファイルをデバッグする。「起動」すると JSON フ�
 ```js
     const message = "hello, world!"
 ```
+
+## その他
+
+- VSCode 拡張機能の adapter-minimal との相違点:
+    - `package.json` に `configurationAttributes` を追加した。
+    - これにより `launch.json` で sourceFile, trace プロパティを設定できるようになる。
+    - これらの値は launch リクエストの引数に渡される。
