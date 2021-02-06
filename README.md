@@ -7,6 +7,9 @@ Debug Adapter Protocol (DAP) の実装例
 - [adapter-minimal](./adapter-minimal)
     - 起動と終了だけできる DAP アダプタ
     - 通信まわりや拡張機能の設定の参考になるはず
+- [adapter-json](./adapter-json)
+    - 変数の表示だけできる DAP アダプタ
+    - variables リクエストの参考になるはず
 
 ## リンク
 
