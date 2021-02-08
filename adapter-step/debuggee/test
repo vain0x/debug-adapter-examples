@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+find tests -type f -name 'ok_*.step' | while read -r FILE
+do
+    echo $FILE
+    yes | node dist/main.js $FILE >$FILE.txt
+done
+
+set +e
+
+find tests -type f -name 'err_*.step' | while read -r FILE
+do
+    echo $FILE
+    yes | node dist/main.js $FILE >$FILE.txt
+done

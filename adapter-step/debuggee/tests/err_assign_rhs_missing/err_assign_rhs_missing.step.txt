@@ -1,0 +1,16 @@
+syntax: ERROR
+tokens:
+  "IDENT"@1:1
+  "PUN"@1:3
+ast:
+  {
+    "stmts": [
+      {
+        "kind": "assign",
+        "name": "a@1:1",
+        "init": {
+          "kind": "missing"
+        }
+      }
+    ]
+  }

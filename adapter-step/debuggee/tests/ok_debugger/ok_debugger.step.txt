@@ -1,0 +1,46 @@
+syntax: OK
+tokens:
+  "IDENT"@1:1
+  "INT"@1:5
+  "EOL"@1:6
+  "debugger"@2:1
+  "EOL"@2:9
+  "IDENT"@3:1
+  "INT"@3:5
+  "EOL"@3:6
+  "IDENT"@4:1
+  "INT"@4:5
+  "EOL"@4:6
+ast:
+  {
+    "stmts": [
+      {
+        "kind": "call",
+        "name": "log@1:1",
+        "args": [
+          "1@1:5"
+        ]
+      },
+      {
+        "kind": "debugger"
+      },
+      {
+        "kind": "call",
+        "name": "log@3:1",
+        "args": [
+          "2@3:5"
+        ]
+      },
+      {
+        "kind": "call",
+        "name": "log@4:1",
+        "args": [
+          "3@4:5"
+        ]
+      }
+    ]
+  }
+1
+trace: debugger @2:1
+2
+3
