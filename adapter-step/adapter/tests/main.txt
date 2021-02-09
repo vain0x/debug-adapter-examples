@@ -1,0 +1,9 @@
+First line.
+
+pause
+
+Entering sub.
+call sub.txt
+Left sub.
+
+Last line.
