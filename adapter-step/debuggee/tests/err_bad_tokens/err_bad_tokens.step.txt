@@ -1,6 +1,0 @@
-syntax: ERROR
-tokens:
-ast:
-  {
-    "stmts": []
-  }

@@ -1,7 +1,0 @@
-if true
-    log "true"
-end
-
-if false
-    log "false"
-end
