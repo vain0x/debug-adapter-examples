@@ -74,7 +74,7 @@ interface DapRequest {
   seq: number
   type: "request"
   command: string
-  args?: unknown
+  arguments?: unknown
 }
 
 // TypeScript ヒント: これは単に Partial<DapRequest> と書ける。
@@ -82,7 +82,7 @@ interface PartialDapRequest {
   seq?: number
   type?: "request"
   command?: string
-  args?: unknown
+  argument?: unknown
 }
 
 const validateAsDapRequest = (message: unknown): DapRequest | null => {
