@@ -10,6 +10,9 @@ Debug Adapter Protocol (DAP) の実装例
 - [adapter-json](./adapter-json)
     - 変数の表示だけできる DAP アダプタ
     - variables リクエストの参考になるはず
+- [adapter-step](./adapter-step)
+    - ステップ実行ができる DAP アダプタ
+    - stepIn などのリクエストの参考になるはず
 
 ## リンク
 
