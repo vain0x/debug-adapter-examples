@@ -44,8 +44,11 @@ export const processIncomingMessage = (message: unknown): void => {
 
       case "next":
       case "stepIn":
-      case "stepOut":
         processStepInRequest(req)
+        return
+
+      case "stepOut":
+        processStepOutRequest(req)
         return
 
       // 表示系:
@@ -139,6 +142,28 @@ const processContinueRequest = (req: DapRequest): void => {
 const processStepInRequest = (req: DapRequest): void => {
   // 1ステップだけ実行を進める。
   const status = getDebuggee().stepIn()
+
+  // (例外が投げられる可能性があるので、処理の後にレスポンスを返す。)
+  writeAck(req)
+
+  switch (status) {
+    case "running":
+    case "paused":
+      writeStoppedEvent("step")
+      return
+
+    case "terminated":
+      writeTerminatedEvent()
+      return
+
+    default:
+      throw never(status)
+  }
+}
+
+const processStepOutRequest = (req: DapRequest): void => {
+  // 1ステップだけ実行を進める。
+  const status = getDebuggee().stepOut()
 
   // (例外が投げられる可能性があるので、処理の後にレスポンスを返す。)
   writeAck(req)

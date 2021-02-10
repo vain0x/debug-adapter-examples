@@ -72,6 +72,23 @@ export class DebuggeeRuntime {
   }
 
   /**
+   * 次に return するまでステップ実行する。
+   */
+  stepOut(): StepStatus {
+    while (true) {
+      const command = this.current.program.commands[this.current.pc]
+      if (command.kind === "return") {
+        return this.stepIn()
+      }
+
+      const status = this.stepIn()
+      if (status !== "running") {
+        return status
+      }
+    }
+  }
+
+  /**
    * 中断か停止するまで実行を進める。
    */
   doContinue(): ContinueStatus {
