@@ -89,6 +89,20 @@ export class DebuggeeRuntime {
   }
 
   /**
+   * 次のコマンドを1つ、処理する。
+   * ただし、call の中には入らない。
+   */
+  stepOver(): StepStatus {
+    const command = this.current.program.commands[this.current.pc]
+    if (command.kind === "call") {
+      this.stepIn()
+      return this.stepOut()
+    }
+
+    return this.stepIn()
+  }
+
+  /**
    * 中断か停止するまで実行を進める。
    */
   doContinue(): ContinueStatus {

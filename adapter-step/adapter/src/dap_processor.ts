@@ -43,6 +43,9 @@ export const processIncomingMessage = (message: unknown): void => {
       //   return
 
       case "next":
+        processNextRequest(req)
+        return
+
       case "stepIn":
         processStepInRequest(req)
         return
@@ -128,6 +131,28 @@ const processContinueRequest = (req: DapRequest): void => {
   switch (status) {
     case "paused":
       writeStoppedEvent("pause")
+      return
+
+    case "terminated":
+      writeTerminatedEvent()
+      return
+
+    default:
+      throw never(status)
+  }
+}
+
+const processNextRequest = (req: DapRequest): void => {
+  // 1ステップだけ実行を進める。ただし call の中には入らない。
+  const status = getDebuggee().stepOver()
+
+  // (例外が投げられる可能性があるので、処理の後にレスポンスを返す。)
+  writeAck(req)
+
+  switch (status) {
+    case "running":
+    case "paused":
+      writeStoppedEvent("step")
       return
 
     case "terminated":
