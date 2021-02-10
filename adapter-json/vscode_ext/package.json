@@ -35,11 +35,6 @@
                                 "type": "string",
                                 "description": "JSON ファイルへのパス",
                                 "default": "${file}"
-                            },
-                            "trace": {
-                                "type": "boolean",
-                                "description": "[開発者向け] Debug Adapter Protocol のログ出力を有効化する",
-                                "default": true
                             }
                         }
                     }
