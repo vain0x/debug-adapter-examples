@@ -25,9 +25,6 @@
     "main": "dist/extension.js",
     "publisher": "vain0x",
     "contributes": {
-        "breakpoints": [
-            { "language": "plaintext" }
-        ],
         "debuggers": [
             {
                 "type": "adapter-minimal",
