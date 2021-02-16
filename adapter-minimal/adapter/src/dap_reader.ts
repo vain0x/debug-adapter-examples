@@ -1,23 +1,27 @@
-// DAP メッセージを標準入力から読む。
+// DAP メッセージを開発ツールから受け取る部分
 //
 // [Overview](https://microsoft.github.io/debug-adapter-protocol/overview)
 // の Base Protocol のあたりを参照。
 
 import { processIncomingMessage } from "./dap_processor"
 import { debug, error, fail } from "./util_logging"
+import { asPlainObject, PlainObject } from "./util_plain_object"
 import { decodeUtf8, encodeUtf8 } from "./util_utf8"
 
-// 標準入力から読んだデータのうち、まだメッセージとしてパースしていないもの。
+// 標準入力から読んだデータを入れていくバッファ。
+// (メッセージとしてパースできた部分は捨てられる。)
 let buffer = Buffer.from([])
 
 /**
- * 標準入力からの読み取りと処理を開始する。
+ * 標準入力のイベントリスナーを登録して、読み取ったデータを処理する。
+ *
+ * 参考: [#stdin](https://nodejs.org/api/process.html#process_process_stdin)
  */
 export const startReader = () => {
   process.stdin.on("readable", () => {
-    // 読み取ったデータをバッファに追記する。
+    // 読み取ったデータをバッファに追加する。
     while (process.stdin.readable) {
-      const chunk = process.stdin.read() as Buffer | null
+      const chunk: Buffer | null = process.stdin.read()
       if (chunk == null || chunk.length === 0) {
         break
       }
@@ -27,17 +31,20 @@ export const startReader = () => {
 
     // バッファに溜まったデータをメッセージ単位に切り分けて、順次処理する。
     while (true) {
-      const result = extractSingleMessageFromBuffer()
-      if (result == null) {
+      const message = extractSingleMessageFromBuffer()
+      if (message == null) {
         break
       }
 
-      processIncomingMessage(result.message) // dap_processor.ts を参照。
+      processIncomingMessage(message)
     }
   })
 }
 
-const extractSingleMessageFromBuffer = (): { message: unknown } | null => {
+/**
+ * バッファからメッセージを1つ取り出す。
+ */
+const extractSingleMessageFromBuffer = (): PlainObject | null => {
   // バッファに溜まったデータは、まだメッセージの一部だけかもしれないので、パースが成功するとは限らない。
   // (パースできなかったら何もせず、次にデータが届くのを待つ。)
   // 逆に、バッファにはすでに複数のメッセージが溜まっていることもある。
@@ -69,23 +76,22 @@ const extractSingleMessageFromBuffer = (): { message: unknown } | null => {
     }
 
     if (key !== "") {
-      error("Unknown header.", key)
+      error("不明なヘッダー:", key)
     }
   }
   if (contentLength == null) {
-    // (Content-Length は必須。エラー処理の方法は仕様に書いてなさそうなので、クラッシュさせる。)
-    throw fail("Content-Length missing.")
+    throw fail("Content-Length が指定されていません。")
   }
 
-  // ボディを JSON としてパースする。(失敗時は例外を伝播する。)
+  // ボディを JSON オブジェクトとしてパースする。(失敗時は例外を伝播する。)
   const bodyPart = buffer.slice(bodyIndex, bodyIndex + contentLength)
-  const body = parseJson(decodeUtf8(bodyPart))
+  const body = parseJsonObject(decodeUtf8(bodyPart))
 
   // バッファからメッセージを取り除く。
   buffer = buffer.slice(bodyIndex + contentLength)
 
   debug("read", body)
-  return { message: body }
+  return body
 }
 
 // -----------------------------------------------
@@ -107,8 +113,22 @@ const findIndex = (buffer: Buffer, patternString: string): number | null => {
   return null
 }
 
+/**
+ * 文字列を分割して配列にする。それぞれのパーツの前後の空白を除去する。
+ */
 const split = (s: string, sep: string): string[] =>
   s.split(sep).map(part => part.trim())
 
-const parseJson = (s: string) =>
-  JSON.parse(s) as unknown
+/**
+ * JSON 文字列をオブジェクトとしてパースする。
+ *
+ * パースできなかったときや、オブジェクトではなかったときは例外を投げる。
+ */
+const parseJsonObject = (s: string): PlainObject => {
+  const obj = asPlainObject(JSON.parse(s) as unknown)
+  if (obj == null) {
+    throw new Error("Expected an object.")
+  }
+
+  return obj
+}

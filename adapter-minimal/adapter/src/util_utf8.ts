@@ -1,6 +1,15 @@
+// 文字列と UTF-8 バイト列の相互変換
+
 import { TextDecoder, TextEncoder } from "util"
 
+/**
+ * [#TextEncoder](https://nodejs.org/api/all.html#util_class_util_textencoder)
+ */
 const encoder = new TextEncoder()
+
+/**
+ * [#TextDecoder](https://nodejs.org/api/all.html#globals_textdecoder)
+ */
 const decoder = new TextDecoder()
 
 /**

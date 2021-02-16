@@ -1,5 +1,5 @@
 {
-  "name": "adapter-minimal-server",
+  "name": "adapter-minimal",
   "version": "0.1.0",
   "description": "最小の DAP アダプタの実装。",
   "private": true,

@@ -1,7 +1,7 @@
 {
     "name": "adapter-minimal-vscode",
     "version": "0.1.0",
-    "description": "最小の DAP アダプタをデバッガーとして提供する、VSCode 拡張機能。",
+    "description": "最小の DAP アダプタをデバッガとして提供する、VSCode 拡張機能。",
     "private": true,
     "author": "vain0x <vainzerox@gmail.com>",
     "license": "CC0-1.0",
@@ -25,9 +25,6 @@
     "main": "dist/extension.js",
     "publisher": "vain0x",
     "contributes": {
-        "breakpoints": [
-            { "language": "plaintext" }
-        ],
         "debuggers": [
             {
                 "type": "adapter-minimal",
