@@ -1,5 +1,8 @@
+// DAP アダプタの処理の本体部分
+
 import { writeDapMessage } from "./dap_writer"
 import { error, fail } from "./util_logging"
+import { PlainObject } from "./util_plain_object"
 
 // メッセージにつける連番の最後の値 (`++lastSeq` で値を増やしつつ次の値を取得できる。)
 let lastSeq = 0
@@ -7,26 +10,26 @@ let lastSeq = 0
 /**
  * 入力されたメッセージを処理する。
  */
-export const processIncomingMessage = (message: unknown): void => {
+export const processIncomingMessage = (message: PlainObject): void => {
   const req = validateAsDapRequest(message)
   if (req == null) {
-    // (リクエストが形式的に無効なとき。エラー処理の方法は仕様に書いてなさそうなので、クラッシュさせる。)
-    throw fail("Request parse error.")
+    // (リクエストが形式的に無効なとき。)
+    throw fail("リクエストではないメッセージは処理できません。")
   }
 
   try {
     switch (req.command) {
       case "initialize":
+        // 成功レスポンスを返す。(capabilities を指定しないので body は省略できる。)
         writeAck(req)
         return
 
       case "launch":
         // launch コマンドが来たらプロセスを起動してデバッグを開始するが、
-        // このアダプタは何もしない。
-
+        // このアダプタは何もしない。起動したという想定で成功レスポンスを返す。
         writeAck(req)
 
-        // このアダプタが動いていることを確認するため、デバッガーにメッセージを送る。
+        // このアダプタが動いていることを確認するため、デバッガにメッセージを送る。
         writeDapMessage({
           seq: ++lastSeq,
           type: "event",
@@ -50,7 +53,7 @@ export const processIncomingMessage = (message: unknown): void => {
         process.exit(0)
 
       default:
-        throw new Error("Method not found.")
+        throw new Error("この種類のリクエストの処理は実装されていません。")
     }
   } catch (err) {
     // 処理中にエラーが起こったときはエラーレスポンスを返す。
@@ -77,22 +80,11 @@ interface DapRequest {
   arguments?: unknown
 }
 
-// TypeScript ヒント: これは単に Partial<DapRequest> と書ける。
-interface PartialDapRequest {
-  seq?: number
-  type?: "request"
-  command?: string
-  argument?: unknown
-}
-
-const validateAsDapRequest = (message: unknown): DapRequest | null => {
-  // message がオブジェクトであることを検査する。
-  if (!(typeof message === "object" && !(message instanceof Array) && message != null)) {
-    return null
-  }
-
-  // 所定のプロパティを持つことを検査する。
-  const { type, seq, command }: PartialDapRequest = message
+/**
+ * オブジェクトが DAP リクエストか検査する。
+ */
+const validateAsDapRequest = (message: PlainObject): DapRequest | null => {
+  const { type, seq, command } = message
   return type === "request"
     && typeof seq === "number"
     && typeof command === "string"
