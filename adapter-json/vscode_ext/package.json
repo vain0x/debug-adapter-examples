@@ -27,6 +27,7 @@
             {
                 "type": "adapter-json",
                 "label": "Debug with adapter-json",
+                "languages": ["json"],
 
                 "configurationAttributes": {
                     "launch": {

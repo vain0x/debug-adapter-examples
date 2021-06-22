@@ -28,7 +28,8 @@
         "debuggers": [
             {
                 "type": "adapter-minimal",
-                "label": "Debug with adapter-minimal"
+                "label": "Debug with adapter-minimal",
+                "languages": ["plaintext"]
             }
         ]
     }

@@ -27,6 +27,8 @@
             {
                 "type": "adapter-step",
                 "label": "Debug with adapter-step",
+                "languages": ["plaintext"],
+
                 "configurationAttributes": {
                     "launch": {
                         "properties": {
