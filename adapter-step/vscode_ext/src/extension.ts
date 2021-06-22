@@ -25,6 +25,8 @@ const DEFAULT_CONFIG: vscode.DebugConfiguration = {
    * (DAP 仕様の Overview を参照。)
    */
   request: "launch",
+
+  sourceFile: "${file}",
 }
 
 /**
